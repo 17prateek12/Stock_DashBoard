@@ -1,28 +1,19 @@
-import { FormEvent, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../slice/authSlice';
+import { FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../slice/authSlice';
 import Button from "./Button";
-import { RootState, AppDispatch } from '../store/store';
-import { useNavigate } from 'react-router-dom';
+import { AppDispatch } from '../store/store';
 
-const LoginForm = () => {
+const Registrationform = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate(); 
+    const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    
-    const { isAuthenticated, error } = useSelector((state: RootState) => state.auth); 
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        dispatch(loginUser({ email, password }));
+        dispatch(registerUser({ username, email, password }));
     };
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/home'); 
-        }
-    }, [isAuthenticated, navigate]);
 
     return (
         <div className="w-full px-4 py-8 mx-auto">
@@ -30,24 +21,30 @@ const LoginForm = () => {
                 <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
                     <input
                         type="text"
-                        placeholder="Enter valid Email"
+                        placeholder="UserName"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="w-full h-8 bg-white rounded-lg my-4 px-4 focus:outline-none border border-btn"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full h-8 bg-white rounded-lg my-4 px-4 focus:outline-none border border-btn"
                     />
                     <input
                         type="password"
-                        placeholder="Enter Password"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full h-8 bg-white rounded-lg my-4 px-4 focus:outline-none border border-btn"
                     />
-                    <Button type="submit">Login</Button> {/* Use Button component */}
+                    <Button type="submit">Sign Up</Button> {/* Pass type="submit" */}
                 </form>
-                {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
         </div>
     );
 };
 
-export { LoginForm };
+export default Registrationform;

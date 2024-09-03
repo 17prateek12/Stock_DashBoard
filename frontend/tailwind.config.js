@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ["class"],
   content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     screens: {
@@ -10,6 +11,14 @@ module.exports = {
       navmd: { max: "900px" },
     },
     extend: {
+        colors: {
+          text:"var(--text)", 
+          muted: "var(--muted)",
+          btn:"var(--btn)",
+          btntxt:"var(--btntxt)",
+          loginform:"var(--loginform)",
+          navside:"var(--navside)",
+        },
     },
   },
   plugins: [],

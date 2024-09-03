@@ -15,3 +15,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@layer base {
+  :root {
+    --muted: hsl(209, 46%, 84%);
+    --text:#072541;
+    --btn:hsl(0,0%,0%);
+    --btntxt:hsl(0,100%,100%);
+    --loginform:hsl(0, 11%, 84%);
+    --navside:hsl(220, 14%, 96%);
+  }
+
+  .dark {
+    --muted: hsl(218, 59%, 15%);
+    --text:hsl(0,100%,100%);
+    --btn:hsl(0,100%,100%);
+    --btntxt:hsl(0, 0%, 0%);
+    --loginform:hsl(0, 0%, 16%);
+    --navside:hsl(222, 28%, 23%);
+  }
+}
+
