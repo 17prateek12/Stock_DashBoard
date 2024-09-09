@@ -101,7 +101,7 @@ const logoutUser = asyncHandler(async (req:Request, res:Response) => {
 
   const currentuser = asyncHandler(async (req:Request, res:Response) => {
     res.json(req.user);
-    console.log(req.user)
+
 });
   
 

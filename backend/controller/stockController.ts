@@ -5,42 +5,46 @@ import yahooFinance from 'yahoo-finance2';
 import { Request, Response } from 'express';
 
 interface HistoricalOptions {
-    period1: number;     
-    period2: number;     
+    period1: number;
+    period2: number;
+    interval: '1m' | '2m' | '5m' | '15m' | '30m' | '60m' | '90m' | '1h' | '1d' | '5d' | '1wk' | '1mo' | '3mo';
+    return: 'object'; 
   }
-
+  
   const historicaldata = asyncHandler(async (req: Request, res: Response) => {
     const { symbol } = req.params;
-    const { startdate, enddate } = req.query;
-
+    const { startdate, enddate, range } = req.query;
+  
     try {
-        // Default dates
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(today.getDate() - 2); 
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 2);
+  
+      const end = enddate ? new Date(enddate as string) : today;
+      const start = startdate ? new Date(startdate as string) : yesterday;
+  
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new Error('Invalid date format');
+      }
+  
+      // Check if the range is a valid interval
+      const validIntervals = ['1m' , '2m' , '5m' , '15m' , '30m' , '60m' , '90m' , '1h' , '1d' , '5d' , '1wk' , '1mo' , '3mo'];
+      const interval = validIntervals.includes(range as string) ? (range as HistoricalOptions['interval']) : '1d'; // Default to '1d'
+  
+      const options: HistoricalOptions = {
+        period1: Math.floor(start.getTime() / 1000),
+        period2: Math.floor(end.getTime() / 1000),
+        interval,
+        return: 'object',
+      };
 
-        const end = enddate ? new Date(enddate as string) : today;
-        const start = startdate ? new Date(startdate as string) : yesterday;
-
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            throw new Error('Invalid date format');
-        }
-
-        const options: HistoricalOptions = {
-            period1: Math.floor(start.getTime() / 1000),
-            period2: Math.floor(end.getTime() / 1000),
-        };
-
-        console.log("Options:", options);
-
-        const data = await yahooFinance.chart(symbol, options);
-        console.log("DATA for symbol:", symbol);
-        res.json(data);
+      const data = await yahooFinance.chart(symbol, options);
+      res.json(data);
     } catch (error) {
-        console.error("Error fetching historical data:", error);
-        res.status(500).send('Error fetching historical data from Yahoo Finance');
+      console.error('Error fetching historical data:', error);
+      res.status(500).send('Error fetching historical data from Yahoo Finance');
     }
-});
+  });
 
 
 
@@ -222,18 +226,23 @@ const Indiaindice = asyncHandler(async(req: Request, res: Response) => {
 });
 
 
+interface Historical{
+    period1:number;
+    period2:number;
+};
+
 async function Categoryfetch(symbol: string) {
     try {
         const end: Date = new Date();
         const start: Date = new Date();
         start.setDate(end.getDate() -2);
 
-        const options: HistoricalOptions = {
+        const options: Historical = {
             period1: Math.floor(start.getTime() / 1000), 
             period2: Math.floor(end.getTime() / 1000),
         };
 
-        const data = await yahooFinance.historical(symbol, options);
+        const data = await yahooFinance.chart(symbol, options);
         return data;
     } catch (error) {
         console.error(`Error fetching historical data for ${symbol}:`, error);
